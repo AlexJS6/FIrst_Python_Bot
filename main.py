@@ -4,6 +4,10 @@ import requests
 import json
 import random
 from replit import db
+from keep_alive import keep_alive # To keep alive use UptimeRobot:
+#https://uptimerobot.com/?gclid=Cj0KCQiAifz-BRDjARIsAEElyGIe-ehqdFkwAXevs__sCRgFQzrJs7f138ZJ7RnCj4IVPNmL85VI8f4aAprQEALw_wcB
+
+# To add webhook on discord you need to put /github at the end of url -> application.json
 
 
 client = discord.Client() # connection to discord
@@ -95,4 +99,5 @@ async def on_message(message): # does something when someone sends a message, no
         
 # by default repl.it is public so secret keys are visible -> use environment variables
 # line to run the bot:
+keep_alive()
 client.run(os.getenv('TOKEN'))
