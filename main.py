@@ -16,6 +16,9 @@ starter_encouragements = [
     'Your are a great person / bot!',
 ]
 
+if 'responding' not in db.keys():
+    db['responding'] = True
+
 # returns random inspirational quote with author
 def get_quote():
     response = requests.get("https://zenquotes.io/api/random")
@@ -53,12 +56,13 @@ async def on_message(message): # does something when someone sends a message, no
         quote = get_quote()
         await message.channel.send(quote)
 
-    options = starter_encouragements
-    if 'encouragements' in db.keys():
-        options = options + db['encouragements']
+    if db['responding']:
+        options = starter_encouragements
+        if 'encouragements' in db.keys():
+            options = options + db['encouragements']
 
-    if any(word in msg for word in sad_words):
-        await message.channel.send(random.choice(options))
+        if any(word in msg for word in sad_words):
+            await message.channel.send(random.choice(options))
 
     if msg.startswith('$new'):
         encouraging_message = msg.split('$new ', 1)[1] # splits message from $new + space
@@ -73,6 +77,22 @@ async def on_message(message): # does something when someone sends a message, no
             encouragements = db['encouragements']
         await message.channel.send(encouragements)
 
+    if msg.startswith('$list'):
+        encouragements = []
+        if 'encouragements' in db.keys():
+            encouragements = db['encouragements']
+        await message.channel.send(encouragements)
+
+    if msg.startswith('$responding'):
+        value = msg.split('$responding ', 1)[1] # The 1 is maxsplit
+
+        if value.lower() == 'true':
+            db['responding'] = True
+            await message.channel.send('Responding is ON.')
+        else:
+            db['responding'] = False
+            await message.channel.send('Responding is OFF.')
+        
 # by default repl.it is public so secret keys are visible -> use environment variables
 # line to run the bot:
 client.run(os.getenv('TOKEN'))
